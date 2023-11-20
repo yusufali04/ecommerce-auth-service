@@ -1,12 +1,10 @@
 import express, { NextFunction, Request, Response } from "express";
 import logger from "./config/logger";
-import createHttpError, { HttpError } from "http-errors";
+import { HttpError } from "http-errors";
 
 const app = express();
 
 app.get("/", (req, res) => {
-    const err = createHttpError(401, "Unauthorized person");
-    throw err;
     res.send("welcome to auth service");
 });
 
