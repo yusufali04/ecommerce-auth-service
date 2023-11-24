@@ -9,7 +9,7 @@
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "prepare": "husky install",
-        "dev": "nodemon src/server.ts",
+        "dev": "nodemon src/server.ts -L",
         "test": "jest --watch --runInBand"
     },
     "author": "Yusuf <yusufali.5094@gmail.com>",
