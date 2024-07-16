@@ -12,6 +12,7 @@ module.exports = {
         tsconfigRootDir: __dirname,
     },
     root: true,
+    ignorePatterns: ["jest.config.js"],
     rules: {
         "no-console": "error",
         "@typescript-eslint/no-unsafe-assignment": "off",

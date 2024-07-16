@@ -1,11 +1,13 @@
+import "reflect-metadata";
 import express, { NextFunction, Request, Response } from "express";
 import logger from "./config/logger";
 import { HttpError } from "http-errors";
-
+import authRouter from "./routes/auth";
 const app = express();
 
+app.use("/auth", authRouter);
 app.get("/", (req, res) => {
-    res.send("welcome to auth servic");
+    res.send("welcome to auth service");
 });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
