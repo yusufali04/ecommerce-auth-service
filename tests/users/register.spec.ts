@@ -70,6 +70,22 @@ describe("POST /auth/register", () => {
             expect(users[0].lastName).toBe(data.lastName);
             expect(users[0].email).toBe(data.email);
         });
+
+        it("Should return id of the created user", async () => {
+            // Arrange
+            const data = {
+                firstName: "Yusuf",
+                lastName: "Ali",
+                email: "yusufali.5094@gmail.com",
+                password: "secret",
+            };
+            // Act
+            const response: request.Response = await request(app)
+                .post("/auth/register")
+                .send(data);
+            // Assert
+            expect(response.body.id).toEqual(expect.any(Number));
+        });
     });
 
     describe("Fields are missing", () => {});
