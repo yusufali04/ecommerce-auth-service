@@ -139,6 +139,6 @@ export class AuthController {
     async self(req: AuthRequest, res: Response) {
         // eslint-disable-next-line no-console
         const user = await this.userService.findById(Number(req.auth.sub));
-        res.json(user);
+        res.json({ ...user, password: undefined });
     }
 }
