@@ -1,5 +1,5 @@
 import { NextFunction, Response } from "express";
-import { RegisterUserRequest } from "../types";
+import { AuthRequest, RegisterUserRequest } from "../types";
 import { UserService } from "../services/UserService";
 import { Logger } from "winston";
 import { validationResult } from "express-validator";
@@ -129,10 +129,16 @@ export class AuthController {
                 httpOnly: true, //very imp
             });
             this.logger.info("User has been logged in", { id: user.id });
-            res.status(201).json({ id: user.id });
+            res.status(200).json({ id: user.id });
         } catch (error) {
             next(error);
             return;
         }
+    }
+
+    async self(req: AuthRequest, res: Response) {
+        // eslint-disable-next-line no-console
+        const user = await this.userService.findById(Number(req.auth.sub));
+        res.json(user);
     }
 }
