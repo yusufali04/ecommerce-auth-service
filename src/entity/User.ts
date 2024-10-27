@@ -26,9 +26,9 @@ export class User {
     @Column()
     role: string;
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({ select: false })
     updatesAt: number;
 
-    @CreateDateColumn()
+    @CreateDateColumn({ select: false })
     createdAt: number;
 }
