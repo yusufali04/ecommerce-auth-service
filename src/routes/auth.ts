@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import express, { NextFunction, Request, Response } from "express";
 import { AuthController } from "../controllers/AuthController";
 import { UserService } from "../services/UserService";
@@ -26,8 +27,6 @@ const authController = new AuthController(
     tokenService,
     credentialService,
 );
-
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
 router.post(
     "/register",
     registerValidator,
@@ -44,12 +43,10 @@ router.post(
     },
 );
 
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
 router.get("/self", authenticate, (req: Request, res: Response) => {
     void authController.self(req as AuthRequest, res);
 });
 
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
 router.post(
     "/refresh",
     validateRefreshToken,
@@ -57,8 +54,6 @@ router.post(
         void authController.refresh(req as AuthRequest, res, next);
     },
 );
-
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
 router.post(
     "/logout",
     authenticate,
