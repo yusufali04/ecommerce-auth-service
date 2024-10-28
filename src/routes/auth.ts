@@ -62,4 +62,5 @@ router.post(
         void authController.logout(req as AuthRequest, res, next);
     },
 );
+
 export default router;
