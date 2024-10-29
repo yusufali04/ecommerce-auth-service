@@ -10,8 +10,8 @@ export interface RegisterUserRequest extends Request {
 }
 export interface AuthRequest extends Request {
     auth: {
-        sub: number;
-        role: number;
+        sub: string;
+        role: string;
         id?: string;
     };
 }
