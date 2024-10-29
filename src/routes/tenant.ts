@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import express from "express";
 import { TenantController } from "../controllers/TenantController";
 import { TenantService } from "../services/TenantService";
 import { AppDataSource } from "../config/data-source";
 import { Tenant } from "../entity/Tenant";
 import logger from "../config/logger";
+import authenticate from "../middlewares/authenticate";
 
 const tenantRepository = AppDataSource.getRepository(Tenant);
 const tenantService = new TenantService(tenantRepository);
@@ -13,6 +15,7 @@ const router = express.Router();
 
 router.post(
     "/",
+    authenticate,
     (req, res, next) => void tenantController.create(req, res, next),
 );
 

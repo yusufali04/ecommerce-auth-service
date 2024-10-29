@@ -138,7 +138,6 @@ describe("POST /auth/register", () => {
             expect(response.statusCode).toBe(400);
             expect(users).toHaveLength(1);
         });
-
         it("Should return access token and refresh token in a cookie", async () => {
             // Arrange
             const data = {
@@ -168,7 +167,6 @@ describe("POST /auth/register", () => {
             expect(isJwt(accessToken)).toBeTruthy();
             expect(isJwt(refreshToken)).toBeTruthy();
         });
-
         it("should store the refresh token into database", async () => {
             // Arrange
             const data = {

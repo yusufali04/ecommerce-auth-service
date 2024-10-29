@@ -36,7 +36,6 @@ describe("POST /auth/self", () => {
                 .set("Cookie", [`accessToken=${accessToken}`]);
             expect(response.statusCode).toBe(200);
         });
-
         it("should return user data", async () => {
             //Register user (Arrange)
             const userData = {
@@ -63,7 +62,6 @@ describe("POST /auth/self", () => {
             // Assert
             expect(response.body.id).toBe(data.id);
         });
-
         it("should not return password along with user data", async () => {
             //Register user (Arrange)
             const userData = {
@@ -89,7 +87,6 @@ describe("POST /auth/self", () => {
             // Assert
             expect(response.body).not.toHaveProperty("password");
         });
-
         it("should return 401 status code if token does not exist", async () => {
             //Register user (Arrange)
             const userData = {
