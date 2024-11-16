@@ -4,6 +4,7 @@ export interface UserData {
     lastName: string;
     email: string;
     password: string;
+    gender: string;
 }
 export interface RegisterUserRequest extends Request {
     body: UserData;

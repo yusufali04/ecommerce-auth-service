@@ -28,6 +28,9 @@ export class User {
     @Column()
     role: string;
 
+    @Column({ nullable: true })
+    gender: string;
+
     @ManyToOne(() => Tenant)
     tenant: Tenant;
 
