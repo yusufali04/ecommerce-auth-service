@@ -1,11 +1,32 @@
 import "reflect-metadata";
 import express, { NextFunction, Request, Response } from "express";
+import cors from "cors";
 import logger from "./config/logger";
 import { HttpError } from "http-errors";
 import authRouter from "./routes/auth";
 import cookieParser from "cookie-parser";
 import tenantRouter from "./routes/tenant";
 const app = express();
+
+const allowedOrigins = ["http://localhost:5173"];
+
+const corsOptions = {
+    origin: (
+        origin: string | undefined,
+        callback: (err: Error | null, allow: boolean) => void,
+    ) => {
+        if (allowedOrigins.includes(origin!) || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"), false);
+        }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization", "Set-Cookie", "Cookie"],
+};
+app.use(cors(corsOptions));
+
 app.use(express.static("public"));
 app.use(cookieParser());
 app.use(express.json());
