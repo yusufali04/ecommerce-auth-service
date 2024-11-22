@@ -63,7 +63,7 @@ export class AuthController {
                 maxAge: 1000 * 60 * 60 * 24 * 365, //1year
                 httpOnly: true, //very imp
             });
-            res.status(201).json({ id: user.id });
+            res.status(201).json({ ...user, password: undefined });
         } catch (error) {
             next(error);
             return;
@@ -129,7 +129,7 @@ export class AuthController {
                 httpOnly: true, //very imp
             });
             this.logger.info("User has been logged in", { id: user.id });
-            res.status(200).json({ id: user.id });
+            res.status(200).json({ ...user, password: undefined });
         } catch (error) {
             next(error);
             return;
