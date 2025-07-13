@@ -4,6 +4,7 @@ export interface UserData {
     lastName: string;
     email: string;
     password: string;
+    role: string;
 }
 export interface RegisterUserRequest extends Request {
     body: UserData;
@@ -25,4 +26,11 @@ export interface IRefreshTokenPayload {
 export interface ITenant {
     name: string;
     address: string;
+}
+export interface ITenantUpdate extends ITenant {
+    id: number;
+}
+
+export interface CreateUserRequest extends Request {
+    body: UserData;
 }

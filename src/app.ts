@@ -5,6 +5,7 @@ import { HttpError } from "http-errors";
 import authRouter from "./routes/auth";
 import cookieParser from "cookie-parser";
 import tenantRouter from "./routes/tenant";
+import userRouter from "./routes/user";
 import cors from "cors";
 const app = express();
 
@@ -32,6 +33,7 @@ app.use(express.json());
 
 app.use("/auth", authRouter);
 app.use("/tenants", tenantRouter);
+app.use("/users", userRouter);
 
 app.get("/", (req, res) => {
     res.send("welcome to auth service");
