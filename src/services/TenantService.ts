@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { ITenant, ITenantUpdate } from "../types";
+import { ITenant } from "../types";
 import { Tenant } from "../entity/Tenant";
 
 export class TenantService {
@@ -7,21 +7,16 @@ export class TenantService {
     async Create(tenantData: ITenant) {
         return await this.tenantRepository.save(tenantData);
     }
-    async GetAll() {
-        const tenants = this.tenantRepository.find();
-        // eslint-disable-next-line no-console
-        console.log(tenants);
-
-        return tenants;
+    async getAll() {
+        return await this.tenantRepository.find();
     }
-    async GetById(tenantId: number) {
-        return await this.tenantRepository.findOneBy({ id: tenantId });
+    async getById(tenantId: number) {
+        return await this.tenantRepository.findOne({ where: { id: tenantId } });
     }
-    async Update(updateData: ITenantUpdate) {
-        const data: ITenant = {
-            name: updateData.name,
-            address: updateData.address,
-        };
-        return await this.tenantRepository.update({ id: updateData.id }, data);
+    async update(id: number, tenantData: ITenant) {
+        return await this.tenantRepository.update(id, tenantData);
+    }
+    async deleteById(tenantId: number) {
+        return await this.tenantRepository.delete(tenantId);
     }
 }

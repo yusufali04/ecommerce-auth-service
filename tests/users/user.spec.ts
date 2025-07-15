@@ -5,12 +5,26 @@ import { DataSource } from "typeorm";
 import createJWKSMock from "mock-jwks";
 import { User } from "../../src/entity/User";
 import { Roles } from "../../src/constants";
+import { UserData } from "../../src/types";
 
 describe("POST /auth/self", () => {
     let connection: DataSource, jwks: ReturnType<typeof createJWKSMock>;
+    let adminToken: string, userData: UserData;
     beforeAll(async () => {
         jwks = createJWKSMock("http://localhost:5501");
         connection = await AppDataSource.initialize();
+
+        adminToken = jwks.token({
+            sub: "1",
+            role: Roles.ADMIN,
+        });
+        userData = {
+            firstName: "Yusuf",
+            lastName: "Momin",
+            email: "Yusuf@gmail.com",
+            password: "Yusuf",
+            role: "CUSTOMER",
+        };
     });
     beforeEach(async () => {
         jwks.start();
@@ -105,5 +119,45 @@ describe("POST /auth/self", () => {
             // Assert
             expect(response.statusCode).toBe(401);
         });
+    });
+
+    describe("User CRUD operations", () => {
+        it("Should return an array of users with status 200", async () => {
+            await request(app)
+                .post("/users")
+                .set("Cookie", [`accessToken=${adminToken}`])
+                .send(userData);
+
+            const response = await request(app)
+                .get("/users")
+                .set("Cookie", [`accessToken=${adminToken}`]);
+
+            expect(response.statusCode).toBe(200);
+            expect(Array.isArray(response.body)).toBe(true);
+            expect(response.body[0].firstName).toBe(userData.firstName);
+            expect(response.body[0].lastName).toBe(userData.lastName);
+        });
+        it("Should delete a user and return 200", async () => {
+            // create user
+            const createUserRes = await request(app)
+                .post("/users")
+                .set("Cookie", [`accessToken=${adminToken}`])
+                .send(userData);
+            // delete user
+            const response = await request(app)
+                .delete(`/users/${createUserRes.body.id}`)
+                .set("Cookie", [`accessToken=${adminToken}`]);
+
+            expect(response.status).toBe(200);
+            expect(response.body.id).toBe(createUserRes.body.id);
+
+            const tenantResponse = await request(app)
+                .get("/users/getById")
+                .set("Cookie", [`accessToken=${adminToken}`])
+                .send({ id: createUserRes.body.id });
+
+            expect(tenantResponse.status).toBe(400);
+        });
+        it.todo("Should update the tenant and return status 204");
     });
 });

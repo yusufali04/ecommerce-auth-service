@@ -28,6 +28,7 @@ describe("POST /auth/register", () => {
                 lastName: "Ali",
                 email: "yusufali.5094@gmail.com",
                 password: "secret12",
+                role: Roles.ADMIN,
             };
             // Act
             const response = await request(app)
@@ -43,6 +44,7 @@ describe("POST /auth/register", () => {
                 lastName: "Ali",
                 email: "yusufali.5094@gmail.com",
                 password: "secret12",
+                role: Roles.ADMIN,
             };
             // Act
             const response = await request(app)
@@ -60,6 +62,7 @@ describe("POST /auth/register", () => {
                 lastName: "Ali",
                 email: "yusufali.5094@gmail.com",
                 password: "secret12",
+                role: Roles.ADMIN,
             };
             // Act
             await request(app).post("/auth/register").send(data);
@@ -78,6 +81,7 @@ describe("POST /auth/register", () => {
                 lastName: "Ali",
                 email: "yusufali.5094@gmail.com",
                 password: "secret12",
+                role: Roles.ADMIN,
             };
             // Act
             const response: request.Response = await request(app)
@@ -93,6 +97,7 @@ describe("POST /auth/register", () => {
                 lastName: "Ali",
                 email: "yusufali.5094@gmail.com",
                 password: "secret12",
+                role: Roles.CUSTOMER,
             };
             // Act
             await request(app).post("/auth/register").send(data);
@@ -109,12 +114,13 @@ describe("POST /auth/register", () => {
                 lastName: "Ali",
                 email: "yusufali.5094@gmail.com",
                 password: "secret12",
+                role: Roles.ADMIN,
             };
             // Act
             await request(app).post("/auth/register").send(data);
             // Assert
             const userRepository = connection.getRepository(User);
-            const users = await userRepository.find();
+            const users = await userRepository.find({ select: ["password"] });
             expect(users[0].password).not.toBe(data.password);
             expect(users[0].password).toHaveLength(60);
             expect(users[0].password).toMatch(/^\$2b\$\d+\$/);
@@ -126,6 +132,7 @@ describe("POST /auth/register", () => {
                 lastName: "Ali",
                 email: "yusufali.5094@gmail.com",
                 password: "secret12",
+                role: Roles.ADMIN,
             };
             const userRepository = connection.getRepository(User);
             await userRepository.save({ ...data, role: "customer" });
@@ -145,6 +152,7 @@ describe("POST /auth/register", () => {
                 lastName: "Ali",
                 email: "yusufali567@gmail.com",
                 password: "secret1278",
+                role: Roles.ADMIN,
             };
             // Act
             const response = await request(app)
@@ -174,6 +182,7 @@ describe("POST /auth/register", () => {
                 lastName: "Ali",
                 email: "yusufali567@gmail.com",
                 password: "secret1278",
+                role: Roles.ADMIN,
             };
             // Act
             const response = await request(app)
@@ -199,6 +208,7 @@ describe("POST /auth/register", () => {
                 lastName: "Ali",
                 email: "",
                 password: "secret12",
+                role: Roles.MANAGER,
             };
             // Act
             const response = await request(app)
@@ -219,6 +229,7 @@ describe("POST /auth/register", () => {
                 lastName: "Ali",
                 email: "yusufali.5094@gmail.com",
                 password: "secret12",
+                role: Roles.ADMIN,
             };
             // Act
             const response = await request(app)
@@ -237,6 +248,7 @@ describe("POST /auth/register", () => {
                 lastName: "",
                 email: "yusufali.5094@gmail.com",
                 password: "secret12",
+                role: Roles.ADMIN,
             };
             // Act
             const response = await request(app)
@@ -255,6 +267,7 @@ describe("POST /auth/register", () => {
                 lastName: "Ali",
                 email: "yusufali.5094@gmail.com",
                 password: "",
+                role: Roles.ADMIN,
             };
             // Act
             const response = await request(app)
@@ -276,6 +289,7 @@ describe("POST /auth/register", () => {
                 lastName: "Ali",
                 email: " yusufali.5094@gmail.com ",
                 password: "secret12",
+                role: Roles.ADMIN,
             };
             // Act
             await request(app).post("/auth/register").send(data);
@@ -283,6 +297,9 @@ describe("POST /auth/register", () => {
             const userRepository = connection.getRepository(User);
             const users = await userRepository.find();
             const user = users[0];
+            // eslint-disable-next-line no-console
+            console.log("All users: ", users);
+
             expect(user.email).toBe("yusufali.5094@gmail.com");
         });
         it("Should return 400 statuscode if email is not valid", async () => {
@@ -292,6 +309,7 @@ describe("POST /auth/register", () => {
                 lastName: "Ali",
                 email: "yusufali.5094@gmail",
                 password: "secret12",
+                role: Roles.ADMIN,
             };
             // Act
             const response = await request(app)
@@ -310,6 +328,7 @@ describe("POST /auth/register", () => {
                 lastName: "Ali",
                 email: "yusufali.5094@gmail.com",
                 password: "secret",
+                role: Roles.ADMIN,
             };
             // Act
             const response = await request(app)

@@ -4,6 +4,7 @@ import { AppDataSource } from "../../src/config/data-source";
 import { DataSource } from "typeorm";
 import { isJwt } from "../utils";
 import { RefreshToken } from "../../src/entity/RefreshToken";
+import { Roles } from "../../src/constants";
 
 describe("POST /auth/login", () => {
     let connection: DataSource;
@@ -18,6 +19,7 @@ describe("POST /auth/login", () => {
             lastName: "Ali",
             email: "yusufali@gmail.com",
             password: "secret12",
+            role: Roles.ADMIN,
         };
         const response = await request(app).post("/auth/register").send(data);
         expect(response.statusCode).toBe(201);

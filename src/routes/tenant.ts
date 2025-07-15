@@ -22,30 +22,17 @@ router.post(
     (req, res, next) => void tenantController.create(req, res, next),
 );
 
-router.get(
-    "/get-all",
-    authenticate,
-    canAccess([Roles.ADMIN]),
-    (req, res, next) => {
-        void tenantController.getAll(req, res, next);
-    },
-);
+router.get("/", (req, res, next) => tenantController.getAll(req, res, next));
 
-router.get(
-    "/getById",
-    authenticate,
-    canAccess([Roles.ADMIN]),
-    (req, res, next) => {
-        void tenantController.getById(req, res, next);
-    },
+router.get("/:id", (req, res, next) => tenantController.getOne(req, res, next));
+router.patch("/:id", authenticate, canAccess([Roles.ADMIN]), (req, res, next) =>
+    tenantController.update(req, res, next),
 );
-router.post(
-    "/update",
+router.delete(
+    "/:id",
     authenticate,
     canAccess([Roles.ADMIN]),
-    (req, res, next) => {
-        void tenantController.update(req, res, next);
-    },
+    (req, res, next) => tenantController.destroy(req, res, next),
 );
 
 export default router;

@@ -1,8 +1,7 @@
-import { NextFunction, Response } from "express";
-import { Request } from "express-jwt";
+import { NextFunction, Response, Request } from "express";
 import { TenantService } from "../services/TenantService";
 import { Logger } from "winston";
-import { ITenantUpdate } from "../types";
+import createHttpError from "http-errors";
 
 export class TenantController {
     constructor(
@@ -21,31 +20,71 @@ export class TenantController {
         }
     }
     async getAll(req: Request, res: Response, next: NextFunction) {
-        this.logger.debug("Request for getting all the tenants", req.body);
         try {
-            const tenants = await this.tenantService.GetAll();
-
-            res.status(200).send(tenants);
+            const tenants = await this.tenantService.getAll();
+            this.logger.info("All tenant have been fetched");
+            res.json(tenants);
         } catch (err) {
             next(err);
         }
     }
-    async getById(req: Request, res: Response, next: NextFunction) {
-        this.logger.debug("Request for getting a tenant", req.body);
+    async getOne(req: Request, res: Response, next: NextFunction) {
+        const tenantId = req.params.id;
+
+        if (isNaN(Number(tenantId))) {
+            next(createHttpError(400, "Invalid url param."));
+            return;
+        }
         try {
-            const tenant = await this.tenantService.GetById(
-                Number(req.body.tenantId),
-            );
-            res.status(200).send(tenant);
+            const tenant = await this.tenantService.getById(Number(tenantId));
+            if (!tenant) {
+                next(createHttpError(400, "Tenant does not exist."));
+                return;
+            }
+            this.logger.info("Tenant has been fetched");
+            res.json(tenant);
         } catch (err) {
             next(err);
         }
     }
     async update(req: Request, res: Response, next: NextFunction) {
+        const { name, address } = req.body;
+        const tenantId = req.params.id;
+
+        if (isNaN(Number(tenantId))) {
+            next(createHttpError(400, "Invalid url param."));
+            return;
+        }
+
         this.logger.debug("Request for updating a tenant", req.body);
+
         try {
-            await this.tenantService.Update(req.body as ITenantUpdate);
-            res.status(204).send();
+            await this.tenantService.update(Number(tenantId), {
+                name,
+                address,
+            });
+
+            this.logger.info("Tenant has been updated", { id: tenantId });
+
+            res.json({ id: Number(tenantId) });
+        } catch (err) {
+            next(err);
+        }
+    }
+    async destroy(req: Request, res: Response, next: NextFunction) {
+        const tenantId = req.params.id;
+
+        if (isNaN(Number(tenantId))) {
+            next(createHttpError(400, "Invalid url param."));
+            return;
+        }
+        try {
+            await this.tenantService.deleteById(Number(tenantId));
+
+            this.logger.info("Tenant has been deleted", {
+                id: Number(tenantId),
+            });
+            res.json({ id: Number(tenantId) });
         } catch (err) {
             next(err);
         }

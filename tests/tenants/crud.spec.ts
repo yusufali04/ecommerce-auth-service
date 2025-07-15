@@ -22,69 +22,90 @@ describe("GET /tenants", () => {
             address: "Tenant Address",
         };
     });
-    beforeEach(() => {
+    beforeEach(async () => {
+        await connection.dropDatabase();
+        await connection.synchronize();
         jwks.start();
     });
     afterEach(() => {
         jwks.stop();
     });
     afterAll(async () => {
-        await connection.dropDatabase();
-        await connection.synchronize();
         await connection.destroy();
     });
-
-    it("Should return an array of tenants with status 200", async () => {
+    it("Should return an array of tenants", async () => {
+        // Create a tenant
         await request(app)
             .post("/tenants")
             .set("Cookie", [`accessToken=${adminToken}`])
             .send(tenantData);
+        // get all tenants
         const response = await request(app)
-            .get("/tenants/get-all")
+            .get("/tenants")
             .set("Cookie", [`accessToken=${adminToken}`]);
         expect(response.statusCode).toBe(200);
-        expect(Array.isArray(response.body)).toBe(true);
         expect(response.body[0].name).toBe(tenantData.name);
         expect(response.body[0].address).toBe(tenantData.address);
     });
-
-    it("Should return a tenant object with status 200", async () => {
+    it("Should return a tenant object", async () => {
+        // Create a tenant
         const createTenantRes = await request(app)
             .post("/tenants")
             .set("Cookie", [`accessToken=${adminToken}`])
             .send(tenantData);
+        // Get a tenant
         const response = await request(app)
-            .get("/tenants/getById")
-            .set("Cookie", [`accessToken=${adminToken}`])
-            .send({ tenantId: createTenantRes.body.id });
+            .get(`/tenants/${createTenantRes.body.id}`)
+            .set("Cookie", [`accessToken=${adminToken}`]);
 
         expect(response.statusCode).toBe(200);
         expect(response.body.name).toBe(tenantData.name);
         expect(response.body.address).toBe(tenantData.address);
     });
-
-    it("Should update the tenant and return status 204", async () => {
+    it("Should update the tenant", async () => {
+        // Create a tenant
         const createTenantRes = await request(app)
             .post("/tenants")
             .set("Cookie", [`accessToken=${adminToken}`])
             .send(tenantData);
 
+        // Update the tenant
         const response = await request(app)
-            .post("/tenants/update")
+            .patch(`/tenants/${createTenantRes.body.id}`)
             .set("Cookie", [`accessToken=${adminToken}`])
             .send({
-                id: createTenantRes.body.id,
                 name: "Yusuf",
                 address: "Tenant Address",
             });
-        expect(response.statusCode).toBe(204);
+        expect(response.status).toBe(200);
+        expect(response.body.id).toBe(createTenantRes.body.id);
 
         const tenantResponse = await request(app)
-            .get("/tenants/getById")
-            .set("Cookie", [`accessToken=${adminToken}`])
-            .send({ tenantId: createTenantRes.body.id });
+            .get(`/tenants/${createTenantRes.body.id}`)
+            .set("Cookie", [`accessToken=${adminToken}`]);
 
         expect(tenantResponse.body.name).toBe("Yusuf");
         expect(tenantResponse.body.address).toBe("Tenant Address");
+    });
+    it("Should delete a tenant", async () => {
+        // Create a tenant
+        const createTenantRes = await request(app)
+            .post("/tenants")
+            .set("Cookie", [`accessToken=${adminToken}`])
+            .send(tenantData);
+        const tenantId = createTenantRes.body.id;
+        // Delete tenant
+        const response = await request(app)
+            .delete(`/tenants/${tenantId}`)
+            .set("Cookie", [`accessToken=${adminToken}`]);
+
+        expect(response.status).toBe(200);
+        expect(response.body.id).toBe(tenantId);
+
+        const tenantResponse = await request(app)
+            .get(`/tenants/${tenantId}`)
+            .set("Cookie", [`accessToken=${adminToken}`]);
+
+        expect(tenantResponse.status).toBe(400);
     });
 });

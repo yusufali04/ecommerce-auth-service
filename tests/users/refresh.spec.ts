@@ -35,6 +35,7 @@ describe("POST /auth/refresh", () => {
             lastName: "Ali",
             email: "yusufali.5094@gmail.com",
             password: "secret12",
+            role: Roles.MANAGER,
         };
 
         const userRepository = connection.getRepository(User);
