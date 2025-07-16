@@ -41,9 +41,6 @@ app.get("/", (req, res) => {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
-    // eslint-disable-next-line no-console
-    console.log(err);
-
     logger.error(err.message);
     const statusCode = err.statusCode || err.status || 500;
     res.status(statusCode).json({

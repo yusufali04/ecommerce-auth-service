@@ -89,8 +89,6 @@ export class UserController {
     }
     async destroy(req: Request, res: Response, next: NextFunction) {
         const userId = req.params.id;
-        // eslint-disable-next-line no-console
-        console.log(userId);
 
         if (isNaN(Number(userId))) {
             next(createHttpError(400, "Invalid url param."));
