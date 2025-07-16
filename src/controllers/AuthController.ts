@@ -21,6 +21,9 @@ export class AuthController {
         next: NextFunction,
     ) {
         // Validation
+        // eslint-disable-next-line no-console
+        console.log("Request: ", req.body);
+
         const result = validationResult(req);
         if (!result.isEmpty()) {
             return res.status(400).json({ errors: result.array() });

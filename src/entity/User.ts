@@ -2,6 +2,7 @@ import {
     Column,
     CreateDateColumn,
     Entity,
+    JoinColumn,
     ManyToOne,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
@@ -28,8 +29,9 @@ export class User {
     @Column()
     role: string;
 
-    @ManyToOne(() => Tenant)
-    tenant: Tenant;
+    @ManyToOne(() => Tenant, { onDelete: "CASCADE" })
+    @JoinColumn({ name: "tenantId" })
+    tenant: Tenant | null;
 
     @UpdateDateColumn({ select: false })
     updatesAt: number;

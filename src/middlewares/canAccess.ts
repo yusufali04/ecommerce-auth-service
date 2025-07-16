@@ -5,6 +5,9 @@ import createHttpError from "http-errors";
 export const canAccess = (roles: string[]) => {
     return (req: Request, res: Response, next: NextFunction) => {
         const _req = req as AuthRequest;
+        // eslint-disable-next-line no-console
+        console.log("This is the role: ", _req.auth.role);
+
         const roleFromToken = _req.auth.role;
         if (!roles.includes(roleFromToken)) {
             const error = createHttpError(

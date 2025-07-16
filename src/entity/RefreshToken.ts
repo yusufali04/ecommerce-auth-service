@@ -2,6 +2,7 @@ import {
     Column,
     CreateDateColumn,
     Entity,
+    JoinColumn,
     ManyToOne,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
@@ -16,7 +17,8 @@ export class RefreshToken {
     @Column({ type: "timestamp" })
     expiresIn: Date;
 
-    @ManyToOne(() => User)
+    @ManyToOne(() => User, { onDelete: "CASCADE" })
+    @JoinColumn({ name: "userId" })
     user: User;
 
     @UpdateDateColumn()
