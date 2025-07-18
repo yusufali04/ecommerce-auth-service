@@ -42,7 +42,6 @@ describe("POST /auth/refresh", () => {
         const refreshTokenRepo = connection.getRepository(RefreshToken);
         const data = await userRepository.save({
             ...userData,
-            role: Roles.CUSTOMER,
         });
         const refreshTokenRecord = await refreshTokenRepo.save({
             user: data,
