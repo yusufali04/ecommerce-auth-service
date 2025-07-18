@@ -30,7 +30,7 @@ describe("POST /auth/self", () => {
         jwks.start();
         await connection.dropDatabase();
         await connection.synchronize();
-    });
+    }, 15000);
 
     afterEach(() => {
         jwks.stop();

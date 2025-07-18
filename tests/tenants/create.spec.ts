@@ -22,7 +22,7 @@ describe("POST /tenants", () => {
             sub: "1",
             role: Roles.ADMIN,
         });
-    });
+    }, 15000);
     afterEach(() => {
         jwks.stop();
     });

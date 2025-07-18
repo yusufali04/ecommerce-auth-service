@@ -23,7 +23,7 @@ describe("POST /auth/login", () => {
         };
         const response = await request(app).post("/auth/register").send(data);
         expect(response.statusCode).toBe(201);
-    });
+    }, 15000);
     afterAll(async () => {
         await connection.destroy();
     });

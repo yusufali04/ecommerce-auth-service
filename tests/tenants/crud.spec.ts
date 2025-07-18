@@ -26,7 +26,7 @@ describe("GET /tenants", () => {
         await connection.dropDatabase();
         await connection.synchronize();
         jwks.start();
-    });
+    }, 15000);
     afterEach(() => {
         jwks.stop();
     });

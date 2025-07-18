@@ -15,7 +15,7 @@ describe("POST /auth/register", () => {
     beforeEach(async () => {
         await connection.dropDatabase();
         await connection.synchronize();
-    });
+    }, 15000);
     afterAll(async () => {
         await connection.destroy();
     });

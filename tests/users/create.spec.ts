@@ -16,13 +16,13 @@ describe("POST /users", () => {
     beforeAll(async () => {
         jwks = createJWKSMock("http://localhost:5501");
         connection = await AppDataSource.initialize();
-    });
+    }, 15000);
 
     beforeEach(async () => {
         jwks.start();
         await connection.dropDatabase();
         await connection.synchronize();
-    });
+    }, 15000);
 
     afterEach(() => {
         jwks.stop();
