@@ -14,7 +14,7 @@ describe("POST /auth/refresh", () => {
     beforeAll(async () => {
         jwks = createJWKSMock("http://localhost:5501");
         connection = await AppDataSource.initialize();
-    });
+    }, 15000);
     beforeEach(async () => {
         jwks.start();
         await connection.dropDatabase();

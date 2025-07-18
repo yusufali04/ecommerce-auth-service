@@ -25,7 +25,7 @@ describe("POST /auth/self", () => {
             password: "Yusuf",
             role: "CUSTOMER",
         };
-    });
+    }, 15000);
     beforeEach(async () => {
         jwks.start();
         await connection.dropDatabase();

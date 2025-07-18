@@ -10,7 +10,7 @@ describe("POST /auth/login", () => {
     let connection: DataSource;
     beforeAll(async () => {
         connection = await AppDataSource.initialize();
-    });
+    }, 15000);
     beforeEach(async () => {
         await connection.dropDatabase();
         await connection.synchronize();

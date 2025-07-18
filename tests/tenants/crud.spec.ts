@@ -21,7 +21,7 @@ describe("GET /tenants", () => {
             name: "Tenant Name",
             address: "Tenant Address",
         };
-    });
+    }, 15000);
     beforeEach(async () => {
         await connection.dropDatabase();
         await connection.synchronize();
