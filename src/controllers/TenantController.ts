@@ -5,8 +5,8 @@ import createHttpError from "http-errors";
 
 export class TenantController {
     constructor(
-        private tenantService: TenantService,
-        private logger: Logger,
+        private readonly tenantService: TenantService,
+        private readonly logger: Logger,
     ) {}
     async create(req: Request, res: Response, next: NextFunction) {
         const { name, address } = req.body;

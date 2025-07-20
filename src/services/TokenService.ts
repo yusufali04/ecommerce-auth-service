@@ -6,7 +6,7 @@ import { RefreshToken } from "../entity/RefreshToken";
 import { Repository } from "typeorm";
 
 export class TokenService {
-    constructor(private refreshTokenRepo: Repository<RefreshToken>) {}
+    constructor(private readonly refreshTokenRepo: Repository<RefreshToken>) {}
     generateAccessToken(payload: JwtPayload) {
         let privateKey: string;
         if (!Config.PRIVATE_KEY) {
