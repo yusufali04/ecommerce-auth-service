@@ -35,7 +35,9 @@ export class UserService {
         } catch (err) {
             const error = createHttpError(
                 500,
-                "Failed to store data in the database",
+                `Failed to store data in the database: ${
+                    (err as Error).message
+                }`,
             );
             throw error;
         }
@@ -67,7 +69,9 @@ export class UserService {
         } catch (err) {
             const error = createHttpError(
                 500,
-                "Failed to update the user in the database",
+                `Failed to update the user in the database: ${
+                    (err as Error).message
+                }`,
             );
             throw error;
         }

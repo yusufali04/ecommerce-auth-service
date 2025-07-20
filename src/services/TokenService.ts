@@ -18,10 +18,9 @@ export class TokenService {
         } catch (err) {
             const error = createHttpError(
                 500,
-                "Error while reading private key",
+                `Error while reading private key: ${(err as Error).message}`,
             );
             throw error;
-            return;
         }
         const accessToken = sign(payload, privateKey, {
             algorithm: "RS256",
