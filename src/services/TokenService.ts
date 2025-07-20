@@ -8,21 +8,11 @@ import { Repository } from "typeorm";
 export class TokenService {
     constructor(private readonly refreshTokenRepo: Repository<RefreshToken>) {}
     generateAccessToken(payload: JwtPayload) {
-        let privateKey: string;
         if (!Config.PRIVATE_KEY) {
             const error = createHttpError(500, "SECRET_KEY is not set");
             throw error;
         }
-        try {
-            privateKey = Config.PRIVATE_KEY;
-        } catch (err) {
-            const error = createHttpError(
-                500,
-                "Error while reading private key",
-            );
-            throw error;
-        }
-        const accessToken = sign(payload, privateKey, {
+        const accessToken = sign(payload, Config.PRIVATE_KEY, {
             algorithm: "RS256",
             expiresIn: "1h",
             issuer: "auth-service",
