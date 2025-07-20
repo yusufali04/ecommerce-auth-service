@@ -18,7 +18,7 @@ export class TokenService {
         } catch (err) {
             const error = createHttpError(
                 500,
-                `Error while reading private key: ${(err as Error).message}`,
+                "Error while reading private key",
             );
             throw error;
         }
