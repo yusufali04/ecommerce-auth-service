@@ -6,7 +6,7 @@ import { RefreshToken } from "../entity/RefreshToken";
 import { Repository } from "typeorm";
 
 export class TokenService {
-    constructor(private refreshTokenRepo: Repository<RefreshToken>) {}
+    constructor(private readonly refreshTokenRepo: Repository<RefreshToken>) {}
     generateAccessToken(payload: JwtPayload) {
         let privateKey: string;
         if (!Config.PRIVATE_KEY) {
@@ -18,10 +18,9 @@ export class TokenService {
         } catch (err) {
             const error = createHttpError(
                 500,
-                "Error while reading private key",
+                `Error while reading private key: ${(err as Error).message}`,
             );
             throw error;
-            return;
         }
         const accessToken = sign(payload, privateKey, {
             algorithm: "RS256",
