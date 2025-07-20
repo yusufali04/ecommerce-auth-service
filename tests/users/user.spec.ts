@@ -158,6 +158,25 @@ describe("POST /auth/self", () => {
 
             expect(tenantResponse.status).toBe(400);
         });
-        it.todo("Should update the tenant and return status 204");
+        it("Should update the user and return status 204", async () => {
+            // create user
+            const createUserRes = await request(app)
+                .post("/users")
+                .set("Cookie", [`accessToken=${adminToken}`])
+                .send(userData);
+
+            const response = await request(app)
+                .patch(`/users/${createUserRes.body.id}`)
+                .set("Cookie", [`accessToken=${adminToken}`])
+                .send({ firstName: "Touhid", lastName: "Muhammad" });
+            expect(response.status).toBe(200);
+
+            const allUsersResponse = await request(app)
+                .get("/users")
+                .set("Cookie", [`accessToken=${adminToken}`]);
+
+            expect(allUsersResponse.body[0].firstName).toBe("Touhid");
+            expect(allUsersResponse.body[0].lastName).toBe("Muhammad");
+        });
     });
 });

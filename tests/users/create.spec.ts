@@ -93,5 +93,29 @@ describe("POST /users", () => {
             expect(users).toHaveLength(1);
             expect(users[0].role).toBe(Roles.MANAGER);
         });
+        it("should return status 500", async () => {
+            // create tenant first
+            const tenant = await createTenant(connection.getRepository(Tenant));
+            const adminToken = jwks.token({
+                sub: "1",
+                role: Roles.ADMIN,
+            });
+
+            // Register user
+            const userData = {
+                firstName: "Yusuf",
+                lastName: "M",
+                email: "yusuf@gmail.com",
+                password: "password",
+            };
+
+            // Add token to cookie
+            const response = await request(app)
+                .post("/users")
+                .set("Cookie", [`accessToken=${adminToken}`])
+                .send(userData);
+
+            expect(response.status).toBe(500);
+        });
     });
 });
