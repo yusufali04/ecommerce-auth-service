@@ -1,4 +1,4 @@
-import { LimitedUserData, UserData } from "../types";
+import { LimitedUserData, UserData, UserQueryParams } from "../types";
 import { User } from "../entity/User";
 import { Repository } from "typeorm";
 import createHttpError from "http-errors";
@@ -85,8 +85,14 @@ export class UserService {
             },
         });
     }
-    async getAll() {
-        return await this.userRepository.find({ relations: { tenant: true } });
+    async getAll(validatedQuery: UserQueryParams) {
+        const queryBuilder = this.userRepository.createQueryBuilder();
+        const result = await queryBuilder
+            .skip((validatedQuery.currentPage - 1) * validatedQuery.perPage)
+            .take(validatedQuery.perPage)
+            .getManyAndCount();
+
+        return result;
     }
     async deleteById(userId: number) {
         return await this.userRepository.delete(userId);

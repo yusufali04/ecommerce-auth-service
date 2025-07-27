@@ -133,9 +133,9 @@ describe("POST /auth/self", () => {
                 .set("Cookie", [`accessToken=${adminToken}`]);
 
             expect(response.statusCode).toBe(200);
-            expect(Array.isArray(response.body)).toBe(true);
-            expect(response.body[0].firstName).toBe(userData.firstName);
-            expect(response.body[0].lastName).toBe(userData.lastName);
+            expect(Array.isArray(response.body.data)).toBe(true);
+            expect(response.body.data[0].firstName).toBe(userData.firstName);
+            expect(response.body.data[0].lastName).toBe(userData.lastName);
         });
         it("Should delete a user and return 200", async () => {
             // create user
@@ -175,8 +175,8 @@ describe("POST /auth/self", () => {
                 .get("/users")
                 .set("Cookie", [`accessToken=${adminToken}`]);
 
-            expect(allUsersResponse.body[0].firstName).toBe("Touhid");
-            expect(allUsersResponse.body[0].lastName).toBe("Muhammad");
+            expect(allUsersResponse.body.data[0].firstName).toBe("Touhid");
+            expect(allUsersResponse.body.data[0].lastName).toBe("Muhammad");
         });
     });
 });
