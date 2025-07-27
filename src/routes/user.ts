@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import express from "express";
+import express, { NextFunction, Response } from "express";
 import authenticate from "../middlewares/authenticate";
 import { canAccess } from "../middlewares/canAccess";
 import { Roles } from "../constants";
@@ -8,6 +8,8 @@ import { UserService } from "../services/UserService";
 import { AppDataSource } from "../config/data-source";
 import { User } from "../entity/User";
 import logger from "../config/logger";
+import listUsersValidator from "../validators/list-users-validator";
+import { Request } from "express-jwt";
 
 const userRepository = AppDataSource.getRepository(User);
 const userService = new UserService(userRepository);
@@ -24,8 +26,13 @@ router.post(
 router.patch("/:id", authenticate, canAccess([Roles.ADMIN]), (req, res, next) =>
     userController.update(req, res, next),
 );
-router.get("/", authenticate, canAccess([Roles.ADMIN]), (req, res, next) =>
-    userController.getAll(req, res, next),
+router.get(
+    "/",
+    authenticate,
+    canAccess([Roles.ADMIN]),
+    listUsersValidator,
+    (req: Request, res: Response, next: NextFunction) =>
+        userController.getAll(req, res, next),
 );
 router.get("/:id", authenticate, canAccess([Roles.ADMIN]), (req, res, next) =>
     userController.getOne(req, res, next),
