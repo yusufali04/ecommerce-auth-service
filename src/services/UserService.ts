@@ -52,6 +52,9 @@ export class UserService {
                 "role",
                 "password",
             ],
+            relations: {
+                tenant: true,
+            },
         });
     }
     async update(
@@ -77,10 +80,13 @@ export class UserService {
     async findById(id: number) {
         return await this.userRepository.findOne({
             where: { id },
+            relations: {
+                tenant: true,
+            },
         });
     }
     async getAll() {
-        return await this.userRepository.find();
+        return await this.userRepository.find({ relations: { tenant: true } });
     }
     async deleteById(userId: number) {
         return await this.userRepository.delete(userId);
