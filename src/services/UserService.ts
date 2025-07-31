@@ -23,22 +23,14 @@ export class UserService {
         }
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
-        try {
-            return await this.userRepository.save({
-                firstName,
-                lastName,
-                email,
-                password: hashedPassword,
-                role: role,
-                tenant: tenantId ? { id: Number(tenantId) } : undefined,
-            });
-        } catch (err) {
-            const error = createHttpError(
-                500,
-                "Failed to store data in the database",
-            );
-            throw error;
-        }
+        return await this.userRepository.save({
+            firstName,
+            lastName,
+            email,
+            password: hashedPassword,
+            role: role,
+            tenant: tenantId ? { id: Number(tenantId) } : undefined,
+        });
     }
 
     async findByEmailWithPassword(email: string) {
@@ -61,22 +53,13 @@ export class UserService {
         userId: number,
         { firstName, lastName, role }: LimitedUserData,
     ) {
-        try {
-            return await this.userRepository.update(userId, {
-                firstName,
-                lastName,
-                role,
-            });
-        } catch (err) {
-            const error = createHttpError(
-                500,
-                `Failed to update the user in the database: ${
-                    (err as Error).message
-                }`,
-            );
-            throw error;
-        }
+        return await this.userRepository.update(userId, {
+            firstName,
+            lastName,
+            role,
+        });
     }
+
     async findById(id: number) {
         return await this.userRepository.findOne({
             where: { id },
