@@ -107,6 +107,7 @@ export class UserService {
             .skip((validatedQuery.currentPage - 1) * validatedQuery.perPage)
             .take(validatedQuery.perPage)
             .orderBy("user.id", "DESC")
+            .leftJoinAndSelect("user.tenant", "tenant")
             .getManyAndCount();
 
         return result;
