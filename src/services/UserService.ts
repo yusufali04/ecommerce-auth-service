@@ -1,6 +1,6 @@
 import { LimitedUserData, UserData, UserQueryParams } from "../types";
 import { User } from "../entity/User";
-import { Repository } from "typeorm";
+import { Brackets, Repository } from "typeorm";
 import createHttpError from "http-errors";
 import bcrypt from "bcryptjs";
 
@@ -23,22 +23,14 @@ export class UserService {
         }
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
-        try {
-            return await this.userRepository.save({
-                firstName,
-                lastName,
-                email,
-                password: hashedPassword,
-                role: role,
-                tenant: tenantId ? { id: Number(tenantId) } : undefined,
-            });
-        } catch (err) {
-            const error = createHttpError(
-                500,
-                "Failed to store data in the database",
-            );
-            throw error;
-        }
+        return await this.userRepository.save({
+            firstName,
+            lastName,
+            email,
+            password: hashedPassword,
+            role: role,
+            tenant: tenantId ? { id: Number(tenantId) } : undefined,
+        });
     }
 
     async findByEmailWithPassword(email: string) {
@@ -61,22 +53,13 @@ export class UserService {
         userId: number,
         { firstName, lastName, role }: LimitedUserData,
     ) {
-        try {
-            return await this.userRepository.update(userId, {
-                firstName,
-                lastName,
-                role,
-            });
-        } catch (err) {
-            const error = createHttpError(
-                500,
-                `Failed to update the user in the database: ${
-                    (err as Error).message
-                }`,
-            );
-            throw error;
-        }
+        return await this.userRepository.update(userId, {
+            firstName,
+            lastName,
+            role,
+        });
     }
+
     async findById(id: number) {
         return await this.userRepository.findOne({
             where: { id },
@@ -86,10 +69,28 @@ export class UserService {
         });
     }
     async getAll(validatedQuery: UserQueryParams) {
-        const queryBuilder = this.userRepository.createQueryBuilder();
+        const queryBuilder = this.userRepository.createQueryBuilder("user");
+        if (validatedQuery.q) {
+            const searchTerm = `%${validatedQuery.q}%`;
+            queryBuilder.where(
+                new Brackets((qb) => {
+                    qb.where(
+                        "CONCAT(user.firstName, ' ', user.lastName) ILIKE :searchTerm",
+                        { searchTerm },
+                    ).orWhere("user.email ILIKE :searchTerm", { searchTerm });
+                }),
+            );
+        }
+        if (validatedQuery.role) {
+            queryBuilder.andWhere("user.role = :role", {
+                role: validatedQuery.role,
+            });
+        }
         const result = await queryBuilder
             .skip((validatedQuery.currentPage - 1) * validatedQuery.perPage)
             .take(validatedQuery.perPage)
+            .orderBy("user.id", "DESC")
+            .leftJoinAndSelect("user.tenant", "tenant")
             .getManyAndCount();
 
         return result;

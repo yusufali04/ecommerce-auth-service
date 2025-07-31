@@ -29,9 +29,6 @@ export class UserController {
     }
 
     async update(req: CreateUserRequest, res: Response, next: NextFunction) {
-        // In our project: We are not allowing user to change the email id since it is used as username
-        // In our project: We are not allowing admin user to change others password
-
         const { firstName, lastName, role } = req.body;
         const userId = req.params.id;
 

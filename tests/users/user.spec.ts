@@ -122,20 +122,73 @@ describe("POST /auth/self", () => {
     });
 
     describe("User CRUD operations", () => {
-        it("Should return an array of users with status 200", async () => {
-            await request(app)
-                .post("/users")
-                .set("Cookie", [`accessToken=${adminToken}`])
-                .send(userData);
+        it("Should return an array of users with status 200 and support pagination, search, and role filter", async () => {
+            // Create multiple users
+            const users = [
+                {
+                    firstName: "Yusuf",
+                    lastName: "Momin",
+                    email: "yusuf1@gmail.com",
+                    password: "pass1",
+                    role: "CUSTOMER",
+                },
+                {
+                    firstName: "Ali",
+                    lastName: "Khan",
+                    email: "ali.khan@gmail.com",
+                    password: "pass2",
+                    role: "ADMIN",
+                },
+                {
+                    firstName: "Sara",
+                    lastName: "Lee",
+                    email: "sara.lee@gmail.com",
+                    password: "pass3",
+                    role: "CUSTOMER",
+                },
+            ];
+            for (const user of users) {
+                await request(app)
+                    .post("/users")
+                    .set("Cookie", [`accessToken=${adminToken}`])
+                    .send(user);
+            }
 
-            const response = await request(app)
-                .get("/users")
+            // Test default pagination
+            let response = await request(app)
+                .get("/users?perPage=2&currentPage=1")
                 .set("Cookie", [`accessToken=${adminToken}`]);
-
             expect(response.statusCode).toBe(200);
             expect(Array.isArray(response.body.data)).toBe(true);
-            expect(response.body.data[0].firstName).toBe(userData.firstName);
-            expect(response.body.data[0].lastName).toBe(userData.lastName);
+            expect(response.body.data.length).toBe(2);
+            expect(response.body.total).toBe(3);
+            expect(response.body.perPage).toBe(2);
+            expect(response.body.currentPage).toBe(1);
+
+            // Test search by name
+            response = await request(app)
+                .get("/users?q=Ali")
+                .set("Cookie", [`accessToken=${adminToken}`]);
+            expect(response.statusCode).toBe(200);
+            expect(
+                response.body.data.some((u: any) => u.firstName === "Ali"),
+            ).toBe(true);
+
+            // Test search by email
+            response = await request(app)
+                .get("/users?q=sara.lee")
+                .set("Cookie", [`accessToken=${adminToken}`]);
+            expect(response.statusCode).toBe(200);
+            expect(response.body.data.length).toBe(1);
+            expect(response.body.data[0].email).toBe("sara.lee@gmail.com");
+
+            // Test filter by role
+            response = await request(app)
+                .get("/users?role=ADMIN")
+                .set("Cookie", [`accessToken=${adminToken}`]);
+            expect(response.statusCode).toBe(200);
+            expect(response.body.data.length).toBe(1);
+            expect(response.body.data[0].role).toBe("ADMIN");
         });
         it("Should delete a user and return 200", async () => {
             // create user
