@@ -33,19 +33,48 @@ describe("GET /tenants", () => {
     afterAll(async () => {
         await connection.destroy();
     });
-    it("Should return an array of tenants", async () => {
-        // Create a tenant
-        await request(app)
-            .post("/tenants")
-            .set("Cookie", [`accessToken=${adminToken}`])
-            .send(tenantData);
-        // get all tenants
-        const response = await request(app)
-            .get("/tenants")
+    it("Should return an array of tenants with pagination and search filters", async () => {
+        // Create multiple tenants
+        const tenants = [
+            { name: "Alpha Tenant", address: "Alpha Address" },
+            { name: "Beta Tenant", address: "Beta Address" },
+            { name: "Gamma Tenant", address: "Gamma Address" },
+        ];
+        for (const t of tenants) {
+            await request(app)
+                .post("/tenants")
+                .set("Cookie", [`accessToken=${adminToken}`])
+                .send(t);
+        }
+
+        // Test pagination: perPage=2, currentPage=1
+        let response = await request(app)
+            .get("/tenants?perPage=2&currentPage=1")
             .set("Cookie", [`accessToken=${adminToken}`]);
         expect(response.statusCode).toBe(200);
-        expect(response.body[0].name).toBe(tenantData.name);
-        expect(response.body[0].address).toBe(tenantData.address);
+        expect(response.body.data.length).toBe(2);
+        expect(response.body.total).toBe(3);
+        expect(response.body.perPage).toBe(2);
+        expect(response.body.currentPage).toBe(1);
+
+        // Test pagination: perPage=2, currentPage=2
+        response = await request(app)
+            .get("/tenants?perPage=2&currentPage=2")
+            .set("Cookie", [`accessToken=${adminToken}`]);
+        expect(response.statusCode).toBe(200);
+        expect(response.body.data.length).toBe(1);
+        expect(response.body.total).toBe(3);
+        expect(response.body.perPage).toBe(2);
+        expect(response.body.currentPage).toBe(2);
+
+        // Test search filter: q=Beta
+        response = await request(app)
+            .get("/tenants?q=Beta")
+            .set("Cookie", [`accessToken=${adminToken}`]);
+        expect(response.statusCode).toBe(200);
+        expect(response.body.data.length).toBe(1);
+        expect(response.body.data[0].name).toBe("Beta Tenant");
+        expect(response.body.data[0].address).toBe("Beta Address");
     });
     it("Should return a tenant object", async () => {
         // Create a tenant
