@@ -2,6 +2,8 @@ import { NextFunction, Response, Request } from "express";
 import { TenantService } from "../services/TenantService";
 import { Logger } from "winston";
 import createHttpError from "http-errors";
+import { matchedData } from "express-validator";
+import { TenantQueryParams } from "../types";
 
 export class TenantController {
     constructor(
@@ -20,10 +22,18 @@ export class TenantController {
         }
     }
     async getAll(req: Request, res: Response, next: NextFunction) {
+        const validatedQuery = matchedData(req, { onlyValidData: true });
         try {
-            const tenants = await this.tenantService.getAll();
+            const [tenants, count] = await this.tenantService.getAll(
+                validatedQuery as TenantQueryParams,
+            );
             this.logger.info("All tenant have been fetched");
-            res.json(tenants);
+            res.json({
+                perPage: validatedQuery.perPage,
+                currentPage: validatedQuery.currentPage,
+                total: count,
+                data: tenants,
+            });
         } catch (err) {
             next(err);
         }
