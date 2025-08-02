@@ -6,6 +6,8 @@ import { Tenant } from "../../src/entity/Tenant";
 import createJWKSMock from "mock-jwks";
 import { Roles } from "../../src/constants";
 
+jest.setTimeout(15000);
+
 describe("POST /tenants", () => {
     let connection: DataSource,
         jwks: ReturnType<typeof createJWKSMock>,
@@ -22,7 +24,7 @@ describe("POST /tenants", () => {
             sub: "1",
             role: Roles.ADMIN,
         });
-    }, 15000);
+    });
     afterEach(() => {
         jwks.stop();
     });

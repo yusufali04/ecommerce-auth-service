@@ -9,17 +9,18 @@ import createJWKSMock from "mock-jwks";
 import { sign } from "jsonwebtoken";
 import { Config } from "../../src/config";
 
+jest.setTimeout(15000);
 describe("POST /auth/refresh", () => {
     let connection: DataSource, jwks: ReturnType<typeof createJWKSMock>;
     beforeAll(async () => {
         jwks = createJWKSMock("http://localhost:5501");
         connection = await AppDataSource.initialize();
-    }, 15000);
+    });
     beforeEach(async () => {
         jwks.start();
         await connection.dropDatabase();
         await connection.synchronize();
-    }, 15000);
+    });
 
     afterEach(() => {
         jwks.stop();

@@ -6,6 +6,8 @@ import request from "supertest";
 import app from "../../src/app";
 import { ITenant } from "../../src/types";
 
+jest.setTimeout(15000);
+
 describe("GET /tenants", () => {
     let connection: DataSource, jwks: ReturnType<typeof createJWKSMock>;
     let adminToken: string, tenantData: ITenant;
@@ -21,12 +23,12 @@ describe("GET /tenants", () => {
             name: "Tenant Name",
             address: "Tenant Address",
         };
-    }, 15000);
+    });
     beforeEach(async () => {
         await connection.dropDatabase();
         await connection.synchronize();
         jwks.start();
-    }, 15000);
+    });
     afterEach(() => {
         jwks.stop();
     });

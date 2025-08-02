@@ -7,15 +7,16 @@ import { Roles } from "../../src/constants";
 import { isJwt } from "../utils";
 import { RefreshToken } from "../../src/entity/RefreshToken";
 
+jest.setTimeout(15000);
 describe("POST /auth/register", () => {
     let connection: DataSource;
     beforeAll(async () => {
         connection = await AppDataSource.initialize();
-    }, 15000);
+    });
     beforeEach(async () => {
         await connection.dropDatabase();
         await connection.synchronize();
-    }, 15000);
+    });
     afterAll(async () => {
         await connection.destroy();
     });
