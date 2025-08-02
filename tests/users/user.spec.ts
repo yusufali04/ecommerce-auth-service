@@ -7,6 +7,7 @@ import { User } from "../../src/entity/User";
 import { Roles } from "../../src/constants";
 import { UserData } from "../../src/types";
 
+jest.setTimeout(15000);
 describe("POST /auth/self", () => {
     let connection: DataSource, jwks: ReturnType<typeof createJWKSMock>;
     let adminToken: string, userData: UserData;
@@ -25,12 +26,12 @@ describe("POST /auth/self", () => {
             password: "Yusuf",
             role: "CUSTOMER",
         };
-    }, 15000);
+    });
     beforeEach(async () => {
         jwks.start();
         await connection.dropDatabase();
         await connection.synchronize();
-    }, 15000);
+    });
 
     afterEach(() => {
         jwks.stop();

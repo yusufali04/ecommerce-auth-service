@@ -6,11 +6,12 @@ import { isJwt } from "../utils";
 import { RefreshToken } from "../../src/entity/RefreshToken";
 import { Roles } from "../../src/constants";
 
+jest.setTimeout(15000);
 describe("POST /auth/login", () => {
     let connection: DataSource;
     beforeAll(async () => {
         connection = await AppDataSource.initialize();
-    }, 15000);
+    });
     beforeEach(async () => {
         await connection.dropDatabase();
         await connection.synchronize();
@@ -23,7 +24,7 @@ describe("POST /auth/login", () => {
         };
         const response = await request(app).post("/auth/register").send(data);
         expect(response.statusCode).toBe(201);
-    }, 15000);
+    });
     afterAll(async () => {
         await connection.destroy();
     });

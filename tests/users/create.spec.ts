@@ -9,6 +9,7 @@ import { User } from "../../src/entity/User";
 import { Tenant } from "../../src/entity/Tenant";
 import { createTenant } from "../utils";
 
+jest.setTimeout(15000);
 describe("POST /users", () => {
     let connection: DataSource;
     let jwks: ReturnType<typeof createJWKSMock>;
@@ -16,13 +17,13 @@ describe("POST /users", () => {
     beforeAll(async () => {
         jwks = createJWKSMock("http://localhost:5501");
         connection = await AppDataSource.initialize();
-    }, 15000);
+    });
 
     beforeEach(async () => {
         jwks.start();
         await connection.dropDatabase();
         await connection.synchronize();
-    }, 15000);
+    });
 
     afterEach(() => {
         jwks.stop();
