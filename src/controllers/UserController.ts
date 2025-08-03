@@ -3,7 +3,7 @@ import { UserService } from "../services/UserService";
 import { CreateUserRequest, UserQueryParams } from "../types";
 import { Logger } from "winston";
 import createHttpError from "http-errors";
-import { matchedData } from "express-validator";
+import { matchedData, validationResult } from "express-validator";
 
 export class UserController {
     constructor(
@@ -11,6 +11,11 @@ export class UserController {
         private readonly logger: Logger,
     ) {}
     async create(req: CreateUserRequest, res: Response, next: NextFunction) {
+        const result = validationResult(req);
+        if (!result.isEmpty()) {
+            next(createHttpError(400, result.array()));
+            return;
+        }
         const { firstName, lastName, email, password, tenantId, role } =
             req.body;
         try {
@@ -56,6 +61,11 @@ export class UserController {
         }
     }
     async getAll(req: Request, res: Response, next: NextFunction) {
+        const result = validationResult(req);
+        if (!result.isEmpty()) {
+            next(createHttpError(400, result.array()));
+            return;
+        }
         const validatedQuery = matchedData(req, { onlyValidData: true });
         try {
             const [users, count] = await this.userService.getAll(
