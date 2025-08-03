@@ -58,7 +58,7 @@ export class UserService {
             lastName,
             role,
             email,
-            tenant: tenantId ? { id: Number(tenantId) } : undefined,
+            tenant: tenantId ? { id: Number(tenantId) } : null,
         });
     }
 
