@@ -47,6 +47,7 @@ export class AuthController {
             const payload: JwtPayload = {
                 sub: String(user.id),
                 role: user.role,
+                tenant: tenantId ? String(tenantId) : "",
             };
             const accessToken = this.tokenService.generateAccessToken(payload);
             const newRefreshToken =
@@ -112,6 +113,7 @@ export class AuthController {
             const payload: JwtPayload = {
                 sub: String(user.id),
                 role: user.role,
+                tenant: user.tenant ? String(user.tenant.id) : "",
             };
             const accessToken = this.tokenService.generateAccessToken(payload);
             const newRefreshToken =
@@ -150,6 +152,7 @@ export class AuthController {
             const payload: JwtPayload = {
                 sub: String(req.auth.sub),
                 role: req.auth.role,
+                tenant: req.auth.tenant,
             };
             // Generate new access token
             const accessToken = this.tokenService.generateAccessToken(payload);
