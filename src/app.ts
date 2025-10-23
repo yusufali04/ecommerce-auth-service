@@ -13,8 +13,6 @@ const allowedOrigins: string[] = [
     Config.CLIENTUI_URL as string,
     Config.ADMINUI_URL as string,
 ];
-// eslint-disable-next-line no-console
-console.log(allowedOrigins);
 
 const corsOptions = {
     origin: allowedOrigins,
