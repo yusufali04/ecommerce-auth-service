@@ -6,21 +6,18 @@ import tenantRouter from "./routes/tenant";
 import userRouter from "./routes/user";
 import cors from "cors";
 import { globalErrorHandler } from "./middlewares/globalErrorHandler";
+import { Config } from "./config";
 const app = express();
 
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins: string[] = [
+    Config.CLIENTUI_URL as string,
+    Config.ADMINUI_URL as string,
+];
+// eslint-disable-next-line no-console
+console.log(allowedOrigins);
 
 const corsOptions = {
-    origin: (
-        origin: string | undefined,
-        callback: (err: Error | null, allow: boolean) => void,
-    ) => {
-        if (allowedOrigins.includes(origin!) || !origin) {
-            callback(null, true);
-        } else {
-            callback(new Error("Not allowed by CORS"), false);
-        }
-    },
+    origin: allowedOrigins,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization", "Set-Cookie", "Cookie"],
