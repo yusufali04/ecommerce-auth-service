@@ -48,6 +48,9 @@ export class AuthController {
                 sub: String(user.id),
                 role: user.role,
                 tenant: tenantId ? String(tenantId) : "",
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
             };
             const accessToken = this.tokenService.generateAccessToken(payload);
             const newRefreshToken =
@@ -114,6 +117,9 @@ export class AuthController {
                 sub: String(user.id),
                 role: user.role,
                 tenant: user.tenant ? String(user.tenant.id) : "",
+                email: user.email,
+                lastName: user.lastName,
+                firstName: user.firstName,
             };
             const accessToken = this.tokenService.generateAccessToken(payload);
             const newRefreshToken =
@@ -124,18 +130,18 @@ export class AuthController {
             });
             res.cookie("accessToken", accessToken, {
                 domain: "localhost",
-                sameSite: "strict",
                 maxAge: 1000 * 60 * 60, //1hour
                 httpOnly: true, //very imp
+                sameSite: "strict",
             });
             res.cookie("refreshToken", refreshToken, {
                 domain: "localhost",
                 sameSite: "strict",
-                maxAge: 1000 * 60 * 60 * 24 * 365, //1year
                 httpOnly: true, //very imp
+                maxAge: 1000 * 60 * 60 * 24 * 365, //1year
             });
             this.logger.info("User has been logged in", { id: user.id });
-            res.status(200).json({ ...user, password: undefined });
+            res.json({ ...user, password: undefined });
         } catch (error) {
             next(error);
             return;
@@ -176,16 +182,16 @@ export class AuthController {
                 id: String(newRefreshToken.id),
             });
             res.cookie("accessToken", accessToken, {
-                domain: "localhost",
                 sameSite: "strict",
+                domain: "localhost",
                 maxAge: 1000 * 60 * 60, //1hour
                 httpOnly: true, //very imp
             });
             res.cookie("refreshToken", refreshToken, {
                 domain: "localhost",
                 sameSite: "strict",
-                maxAge: 1000 * 60 * 60 * 24 * 365, //1year
                 httpOnly: true, //very imp
+                maxAge: 1000 * 60 * 60 * 24 * 365, //1year
             });
             this.logger.info("User has been logged in", { id: user.id });
             res.status(200).json({ id: user.id });
