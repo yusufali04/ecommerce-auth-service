@@ -7,6 +7,7 @@ import { JwtPayload } from "jsonwebtoken";
 import { TokenService } from "../services/TokenService";
 import createHttpError from "http-errors";
 import { CredentialService } from "../services/CredentialService";
+import { Config } from "../config";
 
 export class AuthController {
     constructor(
@@ -60,13 +61,13 @@ export class AuthController {
                 id: String(newRefreshToken.id),
             });
             res.cookie("accessToken", accessToken, {
-                domain: "localhost",
+                domain: Config.MAIN_DOMAIN,
                 sameSite: "strict",
                 maxAge: 1000 * 60 * 60, //1hour
                 httpOnly: true, //very imp
             });
             res.cookie("refreshToken", refreshToken, {
-                domain: "localhost",
+                domain: Config.MAIN_DOMAIN,
                 sameSite: "strict",
                 maxAge: 1000 * 60 * 60 * 24 * 365, //1year
                 httpOnly: true, //very imp
@@ -129,13 +130,13 @@ export class AuthController {
                 id: String(newRefreshToken.id),
             });
             res.cookie("accessToken", accessToken, {
-                domain: "localhost",
+                domain: Config.MAIN_DOMAIN,
                 maxAge: 1000 * 60 * 60, //1hour
                 httpOnly: true, //very imp
                 sameSite: "strict",
             });
             res.cookie("refreshToken", refreshToken, {
-                domain: "localhost",
+                domain: Config.MAIN_DOMAIN,
                 sameSite: "strict",
                 httpOnly: true, //very imp
                 maxAge: 1000 * 60 * 60 * 24 * 365, //1year
@@ -183,12 +184,12 @@ export class AuthController {
             });
             res.cookie("accessToken", accessToken, {
                 sameSite: "strict",
-                domain: "localhost",
+                domain: Config.MAIN_DOMAIN,
                 maxAge: 1000 * 60 * 60, //1hour
                 httpOnly: true, //very imp
             });
             res.cookie("refreshToken", refreshToken, {
-                domain: "localhost",
+                domain: Config.MAIN_DOMAIN,
                 sameSite: "strict",
                 httpOnly: true, //very imp
                 maxAge: 1000 * 60 * 60 * 24 * 365, //1year

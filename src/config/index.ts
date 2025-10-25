@@ -20,6 +20,7 @@ const {
     PRIVATE_KEY,
     CLIENTUI_URL,
     ADMINUI_URL,
+    MAIN_DOMAIN,
 } = process.env;
 export const Config = {
     PORT,
@@ -34,4 +35,5 @@ export const Config = {
     PRIVATE_KEY,
     CLIENTUI_URL,
     ADMINUI_URL,
+    MAIN_DOMAIN,
 };
