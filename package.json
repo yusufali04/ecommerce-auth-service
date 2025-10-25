@@ -16,7 +16,8 @@
         "start": "ts-node src/index.ts",
         "migration:generate": "typeorm-ts-node-commonjs migration:generate",
         "migration:run": "typeorm-ts-node-commonjs migration:run",
-        "migration:create": "typeorm-ts-node-commonjs migration:create"
+        "migration:create": "typeorm-ts-node-commonjs migration:create",
+        "run-migration": "node scripts/run-migration.js"
     },
     "author": "Yusuf <yusufali.5094@gmail.com>",
     "license": "ISC",
@@ -33,6 +34,7 @@
         "@types/uuid": "^10.0.0",
         "@typescript-eslint/eslint-plugin": "^6.11.0",
         "@typescript-eslint/parser": "^6.11.0",
+        "cross-env": "^10.1.0",
         "eslint": "^8.53.0",
         "eslint-config-prettier": "^9.0.0",
         "husky": "^8.0.3",
@@ -60,7 +62,6 @@
         "bcryptjs": "^3.0.2",
         "cookie-parser": "^1.4.7",
         "cors": "^2.8.5",
-        "cross-env": "^7.0.3",
         "dotenv": "^16.3.1",
         "express": "^4.18.2",
         "express-jwt": "^8.4.1",
