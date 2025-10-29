@@ -10,17 +10,28 @@ import path from "node:path";
 export class TokenService {
     constructor(private readonly refreshTokenRepo: Repository<RefreshToken>) {}
     generateAccessToken(payload: JwtPayload) {
-        let privateKey: Buffer;
-        try {
-            privateKey = fs.readFileSync(
-                path.join(__dirname, "../../certs/private.pem"),
-            );
-        } catch (err) {
-            const error = createHttpError(
+        let privateKey: Buffer | string | null = null;
+        if (Config.PRIVATE_KEY) {
+            privateKey = Config.PRIVATE_KEY;
+        }
+        if (!privateKey) {
+            try {
+                privateKey = fs.readFileSync(
+                    path.join(__dirname, "../../certs/private.pem"),
+                );
+            } catch (err) {
+                const error = createHttpError(
+                    500,
+                    "Error while reading private key",
+                );
+                throw error;
+            }
+        }
+        if (!privateKey) {
+            throw createHttpError(
                 500,
-                "Error while reading private key",
+                "Private key is not available for signing tokens.",
             );
-            throw error;
         }
         const accessToken = sign(payload, privateKey, {
             algorithm: "RS256",
